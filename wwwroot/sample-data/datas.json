@@ -1,0 +1,141 @@
+﻿[
+  {
+    "type": "Vegetable",
+    "contents": [
+      {
+        "name": "쌀",
+        "shopPrice": 30
+      },
+      {
+        "name": "고구마",
+        "shopPrice": 25
+      },
+      {
+        "name": "배추",
+        "shopPrice": 15
+      },
+      {
+        "name": "옥수수",
+        "shopPrice": 20
+      },
+      {
+        "name": "고추",
+        "shopPrice": 15
+      },
+      {
+        "name": "무",
+        "shopPrice": 10
+      },
+      {
+        "name": "양파",
+        "shopPrice": 10
+      },
+      {
+        "name": "토마토",
+        "shopPrice": 20
+      },
+      {
+        "name": "바질",
+        "shopPrice": 20
+      },
+      {
+        "name": "딸기",
+        "shopPrice": 15
+      }
+    ]
+  },
+  {
+    "type": "Fish",
+    "contents": [
+      {
+        "name": "갈치",
+        "shopPrice": 20
+      },
+      {
+        "name": "우럭",
+        "shopPrice": 25
+      },
+      {
+        "name": "참돔",
+        "shopPrice": 25
+      },
+      {
+        "name": "참다랑어",
+        "shopPrice": 30
+      },
+      {
+        "name": "바다거북",
+        "shopPrice": 35
+      },
+      {
+        "name": "가오리",
+        "shopPrice": 40
+      },
+      {
+        "name": "해파리",
+        "shopPrice": 45
+      },
+      {
+        "name": "돌돔",
+        "shopPrice": 50
+      },
+      {
+        "name": "나비고기",
+        "shopPrice": 50
+      },
+      {
+        "name": "청상아리",
+        "shopPrice": 60
+      },
+      {
+        "name": "고래상어",
+        "shopPrice": 80
+      },
+      {
+        "name": "크레이피쉬",
+        "shopPrice": 100
+      },
+      {
+        "name": "하프문베타블루",
+        "shopPrice": 150
+      },
+      {
+        "name": "개복치",
+        "shopPrice": 200
+      },
+      {
+        "name": "범고래",
+        "shopPrice": 300
+      },
+      {
+        "name": "라이언피쉬",
+        "shopPrice": 500
+      },
+      {
+        "name": "하프문레드",
+        "shopPrice": 1000
+      },
+      {
+        "name": "실러캔스",
+        "shopPrice": 1500
+      },
+      {
+        "name": "둔클",
+        "shopPrice": 2000
+      },
+      {
+        "name": "리오플",
+        "shopPrice": 3000
+      }
+    ]
+  },
+  {
+    "type": "Cook",
+    "contents": [
+      {
+        "name": "갈치",
+        "shopPrice": 20
+      }
+    ]
+  }  
+]

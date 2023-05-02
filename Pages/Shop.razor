@@ -1,0 +1,46 @@
+﻿@page "/shop"
+@inject HttpClient Http
+@using Acau_Playground.Models;
+@using Acau_Playground.Shared
+
+<MudText Typo="Typo.h4" GutterBottom="true">상점가격</MudText>
+@if (_contents == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="_contents" Hover="true" SortLabel="Sort By" Elevation="0" Striped=true Class="mb-10"
+    HorizontalScrollbar="true" Height="550px" FixedHeader="true" Filter="new Func<Content, bool>(FilterSearch)">
+        <ToolBarContent>
+            <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Content, object>(x=>x.Name)"><b>이름</b></MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Content, object>(x=>x.ShopPrice)"><b>상점가</b></MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="이름">@context.Name</MudTd>
+            <MudTd DataLabel="상점가">@context.ShopPrice</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+
+@code {
+    private IEnumerable<Content>? _contents;
+    private string _searchValue;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var foods = await Http.GetFromJsonAsync<IEnumerable<Food>>("sample-data/datas.json");
+        _contents = foods?.Where(food => !food.Type.Contains("Vege")).First().Contents;
+    }
+
+    private bool FilterSearch(Content data) => _searchValue switch
+    {
+        _ when string.IsNullOrWhiteSpace(_searchValue) => true,
+        _ when data.Name.Contains(_searchValue) => true,
+        _ => false
+    };
+}

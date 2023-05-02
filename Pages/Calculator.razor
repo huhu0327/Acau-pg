@@ -1,0 +1,26 @@
+﻿@page "/calculator"
+@using static Acau_Playground.Pages.Shop;
+
+<MudText Typo="Typo.h4" GutterBottom="true">계산기</MudText>
+<MudText Class="mb-4">Current count: @currentCount</MudText>
+<MudButton Color="Color.Primary" Variant="Variant.Outlined" @onclick="InitCalculator">초기화</MudButton>
+<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="IncrementCount">구매</MudButton>
+<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="IncrementCount">판매</MudButton>
+<MudText Class="mb-4">가격: @_price</MudText>
+
+
+@code {
+    private int currentCount = 0;
+    private int _price = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+        _price = new Random().Next(1000);
+    }
+
+    private void InitCalculator()
+    {
+        _price = 0;
+    }
+}
