@@ -4,6 +4,20 @@
 @using Acau_Playground.Shared
 
 <MudText Typo="Typo.h4" GutterBottom="true">상점가격</MudText>
+<MudTabs @bind-ActivePanelIndex="@_tabIndex" ApplyEffectsToContainer="true">
+        @if (_foods == null)
+        {
+            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        }
+        else
+        {
+            @foreach (var tab in _foods)
+            {
+                <MudTabPanel Text="@TypeTranslateToKorean(tab.Type)" OnClick="@ClickedTabEvent"></MudTabPanel>
+            }
+        }
+</MudTabs>
+
 @if (_contents == null)
 {
     <MudProgressCircular Color="Color.Default" Indeterminate="true" />
@@ -11,10 +25,14 @@
 else
 {
     <MudTable Items="_contents" Hover="true" SortLabel="Sort By" Elevation="0" Striped=true Class="mb-10"
-    HorizontalScrollbar="true" Height="550px" FixedHeader="true" Filter="new Func<Content, bool>(FilterSearch)">
+          HorizontalScrollbar="true" Height="600px" FixedHeader="true" Filter="new Func<Content, bool>(FilterSearch)">
         <ToolBarContent>
             <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
+        <ColGroup>
+            <col style="width:220px"/>
+            <col/>
+        </ColGroup>
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<Content, object>(x=>x.Name)"><b>이름</b></MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Content, object>(x=>x.ShopPrice)"><b>상점가</b></MudTableSortLabel></MudTh>
@@ -29,12 +47,19 @@ else
 
 @code {
     private IEnumerable<Content>? _contents;
-    private string _searchValue;
+    private List<Food>? _foods;
+    private string? _searchValue;
+    private int _tabIndex = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        var foods = await Http.GetFromJsonAsync<IEnumerable<Food>>("sample-data/datas.json");
-        _contents = foods?.Where(food => !food.Type.Contains("Vege")).First().Contents;
+        _foods = await Http.GetFromJsonAsync<List<Food>>("sample-data/datas.json");
+        _contents = _foods?[_tabIndex].Contents;
+    }
+
+    private void ClickedTabEvent()
+    {
+        _contents = _foods?[_tabIndex].Contents;
     }
 
     private bool FilterSearch(Content data) => _searchValue switch
@@ -42,5 +67,13 @@ else
         _ when string.IsNullOrWhiteSpace(_searchValue) => true,
         _ when data.Name.Contains(_searchValue) => true,
         _ => false
+    };
+
+    private string TypeTranslateToKorean(string typeName) => typeName switch
+    {
+        _ when typeName.Contains("Vege") => "농부",
+        _ when typeName.Contains("Fish") => "어부",
+        _ when typeName.Contains("Cook") => "요리사",
+        _ => typeName
     };
 }
