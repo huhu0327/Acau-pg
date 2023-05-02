@@ -128,14 +128,5 @@
         "shopPrice": 3000
       }
     ]
-  },
-  {
-    "type": "Cook",
-    "contents": [
-      {
-        "name": "갈치",
-        "shopPrice": 20
-      }
-    ]
-  }  
+  }
 ]

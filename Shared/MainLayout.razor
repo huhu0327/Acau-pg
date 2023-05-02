@@ -6,18 +6,18 @@
 
 <MudLayout>
     <MudAppBar Elevation="0">
-    <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/"><b>악어의 놀이터</b></MudButton>
-    <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/calculator">계산기</MudButton>
-    <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/shop">상점가</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/"><b>악어의 놀이터</b></MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/calculator">계산기</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/shop">상점가</MudButton>
     </MudAppBar>
- @*   <MudAppBar>
-        <MudList Clickable=true SelectedValue="0">
-            <MudStack Row=true Spacing="0" AlignItems="AlignItems.Stretch">
-                <MudListItem Value="0" Href="/" Match="NavLinkMatch.Prefix"><b>악어의 놀이터</b></MudListItem>
-                <MudListItem Value="1" Href="/calculator" Match="NavLinkMatch.Prefix">계산기</MudListItem>
-                <MudListItem Value="2" Href="/shop" Match="NavLinkMatch.Prefix">상점가격</MudListItem>
-            </MudStack>
-        </MudList>
+    @*   <MudAppBar>
+    <MudList Clickable=true SelectedValue="0">
+    <MudStack Row=true Spacing="0" AlignItems="AlignItems.Stretch">
+    <MudListItem Value="0" Href="/" Match="NavLinkMatch.Prefix"><b>악어의 놀이터</b></MudListItem>
+    <MudListItem Value="1" Href="/calculator" Match="NavLinkMatch.Prefix">계산기</MudListItem>
+    <MudListItem Value="2" Href="/shop" Match="NavLinkMatch.Prefix">상점가격</MudListItem>
+    </MudStack>
+    </MudList>
     </MudAppBar>*@
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6">
@@ -30,13 +30,5 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-
     }
-    //bool _drawerOpen = false;
-
-    //void DrawerToggle()
-    //{
-    //    _drawerOpen = !_drawerOpen;
-    //}
 }
