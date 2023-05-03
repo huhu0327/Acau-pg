@@ -1,26 +1,41 @@
 ﻿@page "/calculator"
-@using static Acau_Playground.Pages.Shop;
+@using Acau_Playground.Services;
+@using Acau_Playground.Viewmodels;
+@inject CalculatorViewModel ViewModel
 
 <MudText Typo="Typo.h4" GutterBottom="true">계산기</MudText>
-<MudText Class="mb-4">Current count: @currentCount</MudText>
-<MudButton Color="Color.Primary" Variant="Variant.Outlined" @onclick="InitCalculator">초기화</MudButton>
-<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="IncrementCount">구매</MudButton>
-<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="IncrementCount">판매</MudButton>
-<MudText Class="mb-4">가격: @_price</MudText>
 
+<MudButtonGroup>
+    <MudSwitch @bind-Checked="@ViewModel.IsEdit" Color="Color.Primary" Label="@($"편집모드: {(ViewModel.IsEdit ? "ON" : "OFF")}")" />
+    <MudCheckBox @bind-Checked="@ViewModel.IsCopyClipboard" Color="Color.Primary" Label="클립보드 복사"></MudCheckBox>
+</MudButtonGroup>
+
+<MudDataGrid Items="@Test" Class="mb-4" Height="500px" SortMode="SortMode.None" Bordered=true Striped=true>
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="항목"/>
+        <TemplateColumn CellClass="d-flex justify-end" Title="가격">
+            <CellTemplate>
+                <MudTextField Text="dd" Margin="Margin.Dense" Style="text-align:center" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+<MudStack Row=true Justify="Justify.FlexEnd" AlignItems="AlignItems.End" Class="mb-4">
+    <MudButton Color="Color.Primary" Variant="Variant.Outlined" @onclick="(()=> ViewModel.Price = 0)">초기화</MudButton>
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="ViewModel.CalculateCommand.Execute">계산</MudButton>
+</MudStack>
+<MudText Class="mb-4" Align="Align.Right"><b>가격: @($"$ {ViewModel.Price:N0}")</b></MudText>
 
 @code {
-    private int currentCount = 0;
-    private int _price = 0;
+    private record class TestClass(string Name, int Age);
+    private List<TestClass> Test = new();
 
-    private void IncrementCount()
+    protected override void OnInitialized()
     {
-        currentCount++;
-        _price = new Random().Next(1000);
-    }
-
-    private void InitCalculator()
-    {
-        _price = 0;
+        Test.Add(new("a", 22));
+        Test.Add(new("a", 2));
+        Test.Add(new("a", 233));
+        Test.Add(new("a", 2));
     }
 }
