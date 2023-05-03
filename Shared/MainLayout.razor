@@ -1,34 +1,58 @@
 ﻿@inherits LayoutComponentBase
+@using Acau_Playground.Viewmodels
+@inject LocalStorageViewModel StorageViewModel
 
-<MudThemeProvider />
+<MudThemeProvider @bind-IsDarkMode=@_isDarkMode Theme="_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/"><b>악어의 놀이터</b></MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/calculator">계산기</MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="/shop">상점가</MudButton>
+        <MudButton Color=Color.Inherit Href="/">
+            <b>악어의 놀이터</b>
+        </MudButton>
+        <MudButton Color=Color.Inherit Href="/calculator">
+            계산기
+        </MudButton>
+        <MudButton Color=Color.Inherit Href="/shop">
+            상점가
+        </MudButton>
+
+        <MudSpacer />
+
+        <MudTooltip Text="Switch Theme">
+            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" ToggledChanged="@ChangeThemeModeAsync"
+                                 ToggledIcon="@Icons.Material.Outlined.Brightness6" Color="Color.Inherit" />
+        </MudTooltip>
     </MudAppBar>
-    @*   <MudAppBar>
-    <MudList Clickable=true SelectedValue="0">
-    <MudStack Row=true Spacing="0" AlignItems="AlignItems.Stretch">
-    <MudListItem Value="0" Href="/" Match="NavLinkMatch.Prefix"><b>악어의 놀이터</b></MudListItem>
-    <MudListItem Value="1" Href="/calculator" Match="NavLinkMatch.Prefix">계산기</MudListItem>
-    <MudListItem Value="2" Href="/shop" Match="NavLinkMatch.Prefix">상점가격</MudListItem>
-    </MudStack>
-    </MudList>
-    </MudAppBar>*@
+
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6">
             @Body
         </MudContainer>
     </MudMainContent>
+
+    <MudAppBar Fixed=false Bottom="true">
+        <MudSpacer />
+        <MudText>Copyright©2023 huhu</MudText>
+        <MudSpacer />
+    </MudAppBar>
 </MudLayout>
 
 @code {
-    protected override void OnInitialized()
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
+
+        _isDarkMode = await StorageViewModel.GetThemeAsync();
+    }
+
+    private async Task ChangeThemeModeAsync(bool changed)
+    {
+        _isDarkMode = changed;
+        await StorageViewModel.SetThemeAsync(_isDarkMode);
     }
 }

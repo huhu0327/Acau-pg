@@ -1,66 +1,60 @@
 ﻿@page "/shop"
-@inject HttpClient Http
-@using Acau_Playground.Models;
 @using Acau_Playground.Shared
+@using Acau_Playground.Viewmodels
+@using Acau_Playground.Models
+@using CommunityToolkit.Mvvm.ComponentModel;
+@using CommunityToolkit.Mvvm.Input;
+@inject HttpClient Http
+@inject FoodViewModel ViewModel
 
 <MudText Typo="Typo.h4" GutterBottom="true">상점가격</MudText>
 <MudTabs @bind-ActivePanelIndex="@_tabIndex" ApplyEffectsToContainer="true">
-        @if (_foods == null)
+    @if (ViewModel.Foods == null)
+    {
+        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    }
+    else
+    {
+        @foreach (var tab in ViewModel.Foods)
         {
-            <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+            <MudTabPanel Text="@TypeTranslateToKorean(tab.Type)"></MudTabPanel>
         }
-        else
-        {
-            @foreach (var tab in _foods)
-            {
-                <MudTabPanel Text="@TypeTranslateToKorean(tab.Type)" OnClick="@ClickedTabEvent"></MudTabPanel>
-            }
-        }
+    }
 </MudTabs>
 
-@if (_contents == null)
+@if (ViewModel.Foods == null)
 {
     <MudProgressCircular Color="Color.Default" Indeterminate="true" />
 }
 else
 {
-    <MudTable Items="_contents" Hover="true" SortLabel="Sort By" Elevation="0" Striped=true Class="mb-10"
-          HorizontalScrollbar="true" Height="600px" FixedHeader="true" Filter="new Func<Content, bool>(FilterSearch)">
+    <MudTable Items="ViewModel.GetContents(_tabIndex)" Hover="true" SortLabel="Sort By" Elevation="0" Striped=true Class="mb-10"
+          HorizontalScrollbar="true" Height="590px" FixedHeader="true" Filter="new Func<Content, bool>(FilterSearch)">
         <ToolBarContent>
-            <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" Clearable=true Immediate=true></MudTextField>
         </ToolBarContent>
         <ColGroup>
-            <col style="width:220px"/>
-            <col/>
+            <col style="width:220px" />
+            <col />
         </ColGroup>
         <HeaderContent>
             <MudTh><MudTableSortLabel SortBy="new Func<Content, object>(x=>x.Name)"><b>이름</b></MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Content, object>(x=>x.ShopPrice)"><b>상점가</b></MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="이름">@context.Name</MudTd>
-            <MudTd DataLabel="상점가">@context.ShopPrice</MudTd>
-        </RowTemplate>
-    </MudTable>
+            <MudTd DataLabel="이름">
+                <MudHighlighter Class="mud-primary-text" Style="background-color:transparent;font-weight:bold" Text="@context.Name" HighlightedText="@_searchValue" />
+            </MudTd>
+            <MudTd DataLabel="상점가">@($"{context.ShopPrice:N0}")</MudTd>
+            </RowTemplate>
+        </MudTable>
 }
 
 
 @code {
-    private IEnumerable<Content>? _contents;
-    private List<Food>? _foods;
     private string? _searchValue;
-    private int _tabIndex = 0;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _foods = await Http.GetFromJsonAsync<List<Food>>("sample-data/datas.json");
-        _contents = _foods?[_tabIndex].Contents;
-    }
-
-    private void ClickedTabEvent()
-    {
-        _contents = _foods?[_tabIndex].Contents;
-    }
+    private int _tabIndex;
 
     private bool FilterSearch(Content data) => _searchValue switch
     {
