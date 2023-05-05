@@ -7,25 +7,38 @@ namespace Acau_Playground.Viewmodels
     public class FoodViewModel : ObservableObject
     {
         private readonly IFoodService _foodService;
-
-        public IReadOnlyList<Food>? Foods;
+        private IReadOnlyDictionary<string, IEnumerable<Food>> _foodList;
 
         public FoodViewModel(IFoodService foodService)
         {
             _foodService = foodService;
         }
-
-        public async Task LoadDataAsync()
+        public async Task OnInitializedAsync()
         {
-            Foods = await _foodService.GetFoodAsync();
+            _foodList = await _foodService.GetFoodAsync();
         }
 
-        public IEnumerable<Content> GetContents(int index)
+        public Food? GetFood(string foodName)
         {
-            if (Foods is null) return Enumerable.Empty<Content>();
+            var list = _foodList.Values.SelectMany(food => food);
 
-            return Foods[index].Contents;
+            var food = list.FirstOrDefault(food => food.Name.Contains(foodName));
+
+            return food;
         }
 
+        public IEnumerable<Food>? GetFoodList(string job)
+        {
+            _foodList.TryGetValue(job, out var result);
+
+            return result;
+        }
+
+        public IEnumerable<Food>? GetFoodListAtIndex(int index)
+        {
+            return _foodList.ElementAt(index).Value;
+        }
+
+        public IEnumerable<string>? GetJobList() => _foodList.Keys;
     }
 }

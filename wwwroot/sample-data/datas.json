@@ -1,9 +1,16 @@
 ﻿[
   {
-    "type": "Vegetable",
-    "contents": [
+    "foods": [
       {
         "name": "쌀",
+        "shopPrice": 30
+      },
+      {
+        "name": "쌀(1등급)",
+        "shopPrice": 50
+      },
+      {
+        "name": "쌀(2등급)",
         "shopPrice": 30
       },
       {
@@ -11,7 +18,23 @@
         "shopPrice": 25
       },
       {
+        "name": "고구마(1등급)",
+        "shopPrice": 40
+      },
+      {
+        "name": "고구마(2등급)",
+        "shopPrice": 25
+      },
+      {
         "name": "배추",
+        "shopPrice": 15
+      },
+      {
+        "name": "배추(1등급)",
+        "shopPrice": 35
+      },
+      {
+        "name": "배추(2등급)",
         "shopPrice": 15
       },
       {
@@ -19,7 +42,23 @@
         "shopPrice": 20
       },
       {
+        "name": "옥수수(1등급)",
+        "shopPrice": 35
+      },
+      {
+        "name": "옥수수(2등급)",
+        "shopPrice": 15
+      },
+      {
         "name": "고추",
+        "shopPrice": 15
+      },
+      {
+        "name": "고추(1등급)",
+        "shopPrice": 35
+      },
+      {
+        "name": "고추(2등급)",
         "shopPrice": 15
       },
       {
@@ -27,7 +66,23 @@
         "shopPrice": 10
       },
       {
+        "name": "무(1등급)",
+        "shopPrice": 30
+      },
+      {
+        "name": "무(2등급)",
+        "shopPrice": 10
+      },
+      {
         "name": "양파",
+        "shopPrice": 10
+      },
+      {
+        "name": "양파(1등급)",
+        "shopPrice": 30
+      },
+      {
+        "name": "양파(2등급)",
         "shopPrice": 10
       },
       {
@@ -35,18 +90,42 @@
         "shopPrice": 20
       },
       {
+        "name": "토마토(1등급)",
+        "shopPrice": 35
+      },
+      {
+        "name": "토마토(2등급)",
+        "shopPrice": 15
+      },
+      {
         "name": "바질",
+        "shopPrice": 20
+      },
+      {
+        "name": "바질(1등급)",
+        "shopPrice": 30
+      },
+      {
+        "name": "바질(2등급)",
         "shopPrice": 20
       },
       {
         "name": "딸기",
         "shopPrice": 15
+      },
+      {
+        "name": "딸기(1등급)",
+        "shopPrice": 35
+      },
+      {
+        "name": "딸기(2등급)",
+        "shopPrice": 15
       }
-    ]
+    ],
+    "name": "농부"
   },
   {
-    "type": "Fish",
-    "contents": [
+    "foods": [
       {
         "name": "갈치",
         "shopPrice": 20
@@ -127,6 +206,7 @@
         "name": "리오플",
         "shopPrice": 3000
       }
-    ]
+    ],
+    "name": "어부"
   }
 ]

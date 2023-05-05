@@ -15,17 +15,14 @@ namespace Acau_Playground.Viewmodels
 
         public async Task OnInitializedAsync()
         {
-            if (!await _localStorage.ContainKeyAsync("CopyClipboard"))
-            {
-                await SetCopyClipboardAsync(true);
-            }
+
         }
 
         public async Task SetThemeAsync(bool isDark) => await _localStorage.SetItemAsync("DarkMode", isDark);
         public async Task<bool> GetThemeAsync() => await _localStorage.GetItemAsync<bool>("DarkMode");
 
-        public async Task SetCopyClipboardAsync(bool isCopy) => await _localStorage.SetItemAsync("CopyClipboard", isCopy);
-        public async Task<bool> GetCopyClipboardAsync() => await _localStorage.GetItemAsync<bool>("CopyClipboard");
+        public async Task SetTableItemAsync(string json) => await _localStorage.SetItemAsync("TableItems", json);
+        public async Task<string> GetTableItemAsync() => await _localStorage.GetItemAsync<string>("TableItems");
 
     }
 }
