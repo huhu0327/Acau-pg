@@ -1,11 +1,11 @@
 ﻿using Acau_Playground.Models;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Acau_Playground.Services
 {
     public interface IFoodService
     {
-        public Task<IReadOnlyList<Food>?> GetFoodAsync();
+        public Task<IReadOnlyDictionary<string, IEnumerable<Food>>> GetFoodAsync();
     }
 
     public class FoodService : IFoodService
@@ -17,10 +17,13 @@ namespace Acau_Playground.Services
             _httpClient = httpClient;
         }
 
-        public Task<IReadOnlyList<Food>?> GetFoodAsync()
+        public async Task<IReadOnlyDictionary<string, IEnumerable<Food>>> GetFoodAsync()
         {
-            return _httpClient.GetFromJsonAsync<IReadOnlyList<Food>?>("sample-data/datas.json");
-        }
+            var json = await _httpClient.GetStringAsync("sample-data/datas.json");
 
+            var result = JsonConvert.DeserializeObject<IEnumerable<Job>>(json)?.ToDictionary(k => k.Name, v => v.Foods);
+
+            return result;
+        }
     }
 }

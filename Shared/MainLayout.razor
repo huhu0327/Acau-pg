@@ -3,11 +3,11 @@
 @inject LocalStorageViewModel StorageViewModel
 
 <MudThemeProvider @bind-IsDarkMode=@_isDarkMode Theme="_theme" />
-<MudDialogProvider />
+<MudDialogProvider DisableBackdropClick="true"/>
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="0">
+<MudLayout Style="height:900px">
+    <MudAppBar Elevation="0" Class="docs-appbar">
         <MudButton Color=Color.Inherit Href="/">
             <b>악어의 놀이터</b>
         </MudButton>
@@ -21,7 +21,7 @@
         <MudSpacer />
 
         <MudTooltip Text="Switch Theme">
-            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" ToggledChanged="@ChangeThemeModeAsync"
+            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" Toggled=@_isDarkMode ToggledChanged="@ChangeThemeModeAsync"
                                  ToggledIcon="@Icons.Material.Outlined.Brightness6" Color="Color.Inherit" />
         </MudTooltip>
     </MudAppBar>
@@ -45,8 +45,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-
         _isDarkMode = await StorageViewModel.GetThemeAsync();
     }
 

@@ -14,14 +14,36 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddScoped<IClipboardService, ClipboardService>();
-builder.Services.AddScoped<IFoodService, FoodService>();
-builder.Services.AddScoped<FoodViewModel>();
-builder.Services.AddScoped<LocalStorageViewModel>();
-builder.Services.AddScoped<CalculatorViewModel>();
+builder.Services.AddServices();
+builder.Services.AddViewModels();
 
 var host = builder.Build();
-await host.Services.GetRequiredService<FoodViewModel>().LoadDataAsync();
-await host.Services.GetRequiredService<LocalStorageViewModel>().OnInitializedAsync();
-await host.Services.GetRequiredService<CalculatorViewModel>().OnInitializedAsync();
+
+var tasks = new Task[]
+{
+    host.Services.GetRequiredService<FoodViewModel>().OnInitializedAsync(),
+    host.Services.GetRequiredService<LocalStorageViewModel>().OnInitializedAsync(),
+    host.Services.GetRequiredService<CalculatorViewModel>().OnInitializedAsync(),
+};
+await Task.WhenAll(tasks);
 await host.RunAsync();
+
+public static class ServiceExtension
+{
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IClipboardService, ClipboardService>();
+        services.AddScoped<IFoodService, FoodService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddViewModels(this IServiceCollection services)
+    {
+        services.AddScoped<FoodViewModel>();
+        services.AddScoped<LocalStorageViewModel>();
+        services.AddScoped<CalculatorViewModel>();
+
+        return services;
+    }
+}

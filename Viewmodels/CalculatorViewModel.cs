@@ -1,75 +1,172 @@
-﻿using Acau_Playground.Services;
+﻿using Acau_Playground.Models;
+using Acau_Playground.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using MudBlazor;
-using System.Windows.Input;
+using Newtonsoft.Json;
 
 namespace Acau_Playground.Viewmodels
 {
     public class CalculatorViewModel : ObservableObject
     {
         private readonly LocalStorageViewModel _storageViewModel;
+        private readonly FoodViewModel _foodViewModel;
         private readonly IClipboardService _clipboardService;
         private readonly ISnackbar _snackbar;
 
-        private bool _isCopyClipboard;
-        public bool IsCopyClipboard
+        private bool _isEditTable;
+        public bool IsEditTable
         {
-            get { return _isCopyClipboard; }
+            get { return _isEditTable; }
             set
             {
-                SetProperty(ref _isCopyClipboard, value);
-                _ = _storageViewModel.SetCopyClipboardAsync(IsCopyClipboard);
+                if (EqualityComparer<bool>.Default.Equals(_isEditTable, value)) return;
+                _isEditTable = value;
+
+                if (!_isEditTable) UpdateTable().GetAwaiter();
             }
         }
 
-        private bool _isEdit;
-
-        public bool IsEdit
+        private int _plusPrice;
+        public int PlusPrice
         {
-            get { return _isEdit; }
-            set { _isEdit = value; }
+            get { return _plusPrice; }
+            set
+            {
+                if (EqualityComparer<int>.Default.Equals(_plusPrice, value)) return;
+                _plusPrice = value;
+
+                foreach (var item in TableItems)
+                {
+                    item.PurchasePrice = _plusPrice;
+                }
+            }
         }
 
+        public ISet<Food> TableItems { get; private set; }
+        public HashSet<Food> SelectedTableItems { get; set; }
 
-        private int _price;
-        public int Price
+        public bool IsVisibleDialog { get; set; }
+        public string SelectedJobName { get; set; }
+        public IEnumerable<string> SelectedFoodNames { get; set; }
+
+        public int Price => TableItems.Sum(content => content.Sum);
+
+        public CalculatorViewModel(IServiceProvider services)
         {
-            get { return _price; }
-            set { SetProperty(ref _price, value); }
-        }
+            _foodViewModel = services.GetRequiredService<FoodViewModel>();
+            _storageViewModel = services.GetRequiredService<LocalStorageViewModel>();
+            _clipboardService = services.GetRequiredService<IClipboardService>();
+            _snackbar = services.GetRequiredService<ISnackbar>();
 
-
-        public ICommand CalculateCommand { get; }
-
-        public CalculatorViewModel(LocalStorageViewModel storage, IClipboardService clipboardService, ISnackbar snackbar)
-        {
-            _storageViewModel = storage;
-            _clipboardService = clipboardService;
-            _snackbar = snackbar;
-
-            _snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
-            _snackbar.Configuration.VisibleStateDuration = 5000;
-            _snackbar.Configuration.HideTransitionDuration = 500;
-            _snackbar.Configuration.ShowCloseIcon = false;
-
-            CalculateCommand = new RelayCommand(async () => await CalculateAsync());
+            ConfigurateSnackbar();
         }
 
         public async Task OnInitializedAsync()
         {
-            IsCopyClipboard = await _storageViewModel.GetCopyClipboardAsync();
+            var json = await _storageViewModel.GetTableItemAsync();
+
+            TableItems = json switch
+            {
+                _ when string.IsNullOrWhiteSpace(json) => new HashSet<Food>(),
+                _ => JsonConvert.DeserializeObject<ISet<Food>>(json)
+            };
         }
 
-        private async Task CalculateAsync()
+        private void ConfigurateSnackbar()
         {
-            Price = new Random().Next(99999);
+            _snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            _snackbar.Configuration.VisibleStateDuration = 5000;
+            _snackbar.Configuration.HideTransitionDuration = 500;
+            _snackbar.Configuration.ShowCloseIcon = false;
+        }
 
-            if (IsCopyClipboard)
+
+        public void RemoveSelectedItem(Food food)
+        {
+            TableItems.Remove(food);
+        }
+
+        public void RemoveSelectedItems()
+        {
+            foreach (var item in SelectedTableItems)
             {
-                var task = new Task[] { Task.Run(() => _snackbar.Add("클립보드 복사 완료", Severity.Normal)), _clipboardService.CopyToClipboard($"/수표 {_price}") };
-                await Task.WhenAll(task);
+                TableItems.Remove(item);
             }
         }
+
+        public void Reset()
+        {
+            foreach (var item in TableItems)
+            {
+                item.Init();
+            }
+        }
+
+        public async Task CopyPriceAsync()
+        {
+            var task = new Task[] {
+                    Task.Run(() => _snackbar.Add("클립보드 복사 완료", Severity.Normal)),
+                    _clipboardService.CopyToClipboard($"/수표 {Price}")
+                };
+
+            await Task.WhenAll(task);
+        }
+
+        private void AddFoods(IEnumerable<string> foods)
+        {
+            foreach (var foodName in foods)
+            {
+                var food = _foodViewModel.GetFood(foodName);
+                if (food is null) continue;
+                TableItems.Add(food);
+            }
+        }
+
+        public IEnumerable<string> GetFoods() => _foodViewModel.GetJobList();
+
+        public IEnumerable<string> GetItems()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedJobName)) return Enumerable.Empty<string>();
+
+            var items = TableItems.Select(item => item.Name);
+
+            var result = _foodViewModel.GetFoodList(SelectedJobName)
+                .Select(food => food.Name)
+                .Where(food => !food.Contains("등급"))
+                .Except(items);
+
+            return result;
+        }
+
+        public void ShowDialog()
+        {
+            IsVisibleDialog = true;
+        }
+
+        public void CloseDialog()
+        {
+            IsVisibleDialog = false;
+            SelectedJobName = string.Empty;
+            SelectedFoodNames = Enumerable.Empty<string>();
+        }
+
+        public void AddDialog()
+        {
+            if (string.IsNullOrEmpty(SelectedJobName) || SelectedFoodNames.FirstOrDefault() is null) return;
+
+            AddFoods(SelectedFoodNames);
+            CloseDialog();
+        }
+
+        public async Task UpdateTable()
+        {
+            if (TableItems is null) return;
+
+            ISet<Food> data = TableItems.Select(s => s.Clone()).ToHashSet();
+
+            var json = JsonConvert.SerializeObject(data);
+            await _storageViewModel.SetTableItemAsync(json);
+        }
+
     }
 }
