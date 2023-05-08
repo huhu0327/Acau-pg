@@ -6,11 +6,11 @@
 @using CommunityToolkit.Mvvm.Input;
 @inject FoodViewModel ViewModel
 
-<MudText Typo="Typo.h4" GutterBottom="true">상점가격</MudText>
-<MudTabs @bind-ActivePanelIndex="@_tabIndex" ApplyEffectsToContainer="true">
-    @if (ViewModel == null)
+<MudText Typo="Typo.h4" GutterBottom>상점가격</MudText>
+<MudTabs @bind-ActivePanelIndex="@_tabIndex" ApplyEffectsToContainer>
+    @if (!ViewModel.GetJobList().Any())
     {
-        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        <MudProgressCircular Color="Color.Default" Indeterminate />
     }
     else
     {
@@ -23,32 +23,39 @@
 
 @if (ViewModel == null)
 {
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+    <MudProgressCircular Color="Color.Default" Indeterminate />
 }
 else
 {
-    <MudTable Items="ViewModel.GetFoodListAtIndex(_tabIndex)" SortLabel="Sort By" Elevation="0" Striped=true Class="mb-10"
-          HorizontalScrollbar="true" Height="960px" FixedHeader="true" Filter="new Func<Food, bool>(FilterSearch)">
+    <MudTable Items="ViewModel.GetFoodListAtIndex(_tabIndex)" SortLabel="Sort By" Elevation="0" Class="mb-6" Height="660px"
+            HorizontalScrollbar Striped FixedHeader Filter="new Func<Food, bool>(FilterSearch)">
         <ToolBarContent>
             <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                      Class="mt-0" Clearable Immediate></MudTextField>
-        </ToolBarContent>
+                      Class="mt-0" Clearable Immediate>
+        </MudTextField>
+    </ToolBarContent>
 
-        <ColGroup>
-            <col style="width:220px" />
-            <col />
-        </ColGroup>
+    <ColGroup>
+        <col style="width:240px" />
+        <col />
+    </ColGroup>
 
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Food, object>(x=>x.Name)" InitialDirection="SortDirection.Ascending"><b>이름</b></MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Food, object>(x=>x.ShopPrice)"><b>상점가</b></MudTableSortLabel></MudTh>
-        </HeaderContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Food, object>(x=>x.Name)" InitialDirection="SortDirection.Ascending"><b>이름</b></MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <center><MudTableSortLabel SortBy="new Func<Food, object>(x=>x.ShopPrice)"><b>상점가</b></MudTableSortLabel></center>
+        </MudTh>
+    </HeaderContent>
 
-        <RowTemplate>
-            <MudTd DataLabel="이름">
-                <MudHighlighter Class="mud-primary-text" Style="background-color:transparent;font-weight:bold" Text="@context.Name" HighlightedText="@_searchValue" />
+    <RowTemplate>
+        <MudTd DataLabel="이름">
+            <MudHighlighter Class="mud-primary-text" Style="background-color:transparent;font-weight:bold" Text="@context.Name" HighlightedText="@_searchValue" />
+        </MudTd>
+        <MudTd DataLabel="상점가">
+            <center>@($"{context.ShopPrice:N0}")</center>
             </MudTd>
-            <MudTd DataLabel="상점가">@($"{context.ShopPrice:N0}")</MudTd>
         </RowTemplate>
     </MudTable>
 }

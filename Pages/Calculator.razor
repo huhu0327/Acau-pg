@@ -12,7 +12,7 @@
 
 <MudTable Items="@ViewModel.TableItems" @bind-SelectedItems="ViewModel.SelectedTableItems" MultiSelection="@ViewModel.IsEditTable"
           Bordered HorizontalScrollbar FixedHeader FixedFooter CustomFooter Striped Hover SelectOnRowClick="false"
-          Height="500px" Class="mb-10">
+          Height="600px" Class="mb-10">
     <ColGroup>
         @if (!ViewModel.IsEditTable)
         {
@@ -66,16 +66,18 @@
         else
         {
             <MudTd DataLabel="단가">
-                <MudNumericField @bind-Value="@context.PurchasePrice" Min="0" Immediate Clearable />
+                <MudNumericField @bind-Value="@context.PurchasePrice" Min="0" Immediate Clearable/>
             </MudTd>
-            <MudTd><center><MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick=@(()=> ViewModel.RemoveSelectedItem(context))>삭제</MudButton></center></MudTd>
+            <MudTd>
+                <center><MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick=@(()=> ViewModel.RemoveSelectedItem(context))>삭제</MudButton></center>
+            </MudTd>
         }
     </RowTemplate>
 
     <FooterContent>
         @if (ViewModel.IsEditTable)
         {
-            <MudTFootRow Class="bold-text">
+            <MudTFootRow>
                 <MudTd colspan="4">
                     <div style="text-align:center;">
                         <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@ViewModel.ShowDialog" Title="항목추가" />
@@ -101,7 +103,6 @@
 <MudText Class="mb-4" Align="Align.Right">
     <b>가격: @DisplayPriceComma(ViewModel.Price)</b>
 </MudText>
-
 
 <MudDialog @bind-IsVisible=ViewModel.IsVisibleDialog>
     <TitleContent>
