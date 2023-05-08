@@ -2,6 +2,7 @@
 @using Acau_Playground.Shared
 @using Acau_Playground.Viewmodels
 @using Acau_Playground.Models
+@using Acau_Playground.Extensions
 @using CommunityToolkit.Mvvm.ComponentModel;
 @using CommunityToolkit.Mvvm.Input;
 @inject FoodViewModel ViewModel
@@ -54,7 +55,7 @@ else
             <MudHighlighter Class="mud-primary-text" Style="background-color:transparent;font-weight:bold" Text="@context.Name" HighlightedText="@_searchValue" />
         </MudTd>
         <MudTd DataLabel="상점가">
-            <center>@($"{context.ShopPrice:N0}")</center>
+            <center>@context.ShopPrice.ToMoneyComma()</center>
             </MudTd>
         </RowTemplate>
     </MudTable>
