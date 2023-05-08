@@ -3,10 +3,10 @@
 @inject LocalStorageViewModel StorageViewModel
 
 <MudThemeProvider @bind-IsDarkMode=@_isDarkMode Theme="_theme" />
-<MudDialogProvider DisableBackdropClick="true"/>
+<MudDialogProvider DisableBackdropClick="true" />
 <MudSnackbarProvider />
 
-<MudLayout Style="height:900px">
+<MudLayout>
     <MudAppBar Elevation="0" Class="docs-appbar">
         <MudButton Color=Color.Inherit Href="/">
             <b>악어의 놀이터</b>
@@ -27,12 +27,12 @@
     </MudAppBar>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6" Style="height:960px;">
             @Body
         </MudContainer>
     </MudMainContent>
 
-    <MudAppBar Fixed=false Bottom="true">
+    <MudAppBar Fixed Bottom="true" Elevation="0">
         <MudSpacer />
         <MudText>Copyright©2023 huhu</MudText>
         <MudSpacer />

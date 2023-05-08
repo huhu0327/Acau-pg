@@ -6,7 +6,7 @@
         public IEnumerable<Food> Foods { get; set; } = Enumerable.Empty<Food>();
     }
 
-    public class Food
+    public record class Food
     {
         public string Name { get; set; } = string.Empty;
         public int ShopPrice { get; set; }
@@ -19,16 +19,6 @@
         public void Init()
         {
             Box = 0; Set = 0; Num = 0;
-        }
-
-        public Food Clone()
-        {
-            return new Food()
-            {
-                Name = Name,
-                ShopPrice = ShopPrice,
-                PurchasePrice = PurchasePrice,
-            };
         }
     }
 }
