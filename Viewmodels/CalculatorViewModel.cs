@@ -43,7 +43,7 @@ namespace Acau_Playground.Viewmodels
         }
 
         public ISet<Food> TableItems { get; private set; } = new HashSet<Food>();
-        public HashSet<Food> SelectedTableItems { get; set; } = new();
+        public HashSet<Food> SelectedTableItems { get; set; } = new HashSet<Food>();
 
         public bool IsVisibleDialog { get; set; }
         public string SelectedJobName { get; set; } = string.Empty;
@@ -148,7 +148,7 @@ namespace Acau_Playground.Viewmodels
 
         public void AddDialog()
         {
-            if (string.IsNullOrEmpty(SelectedJobName) || SelectedFoodNames.FirstOrDefault() is null) return;
+            if (SelectedFoodNames.FirstOrDefault() is null) return;
 
             AddFoods(SelectedFoodNames);
             CloseDialog();

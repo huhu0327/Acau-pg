@@ -8,30 +8,24 @@
 @inject FoodViewModel ViewModel
 
 <MudText Typo="Typo.h4" GutterBottom>상점가격</MudText>
-<MudTabs @bind-ActivePanelIndex="@_tabIndex" ApplyEffectsToContainer>
-    @if (!ViewModel.GetJobList().Any())
-    {
-        <MudProgressCircular Color="Color.Default" Indeterminate />
-    }
-    else
-    {
-        @foreach (var job in ViewModel.GetJobList())
-        {
-            <MudTabPanel Text="@job"></MudTabPanel>
-        }
-    }
-</MudTabs>
-
-@if (ViewModel == null)
+@if (!ViewModel.GetJobList().Any())
 {
     <MudProgressCircular Color="Color.Default" Indeterminate />
 }
 else
 {
+    <MudTabs @bind-ActivePanelIndex="@_tabIndex" ApplyEffectsToContainer>
+
+    @foreach (var job in ViewModel.GetJobList())
+        {
+            <MudTabPanel Text="@job"></MudTabPanel>
+        }
+    </MudTabs>
+
     <MudTable Items="ViewModel.GetFoodListAtIndex(_tabIndex)" SortLabel="Sort By" Elevation="0" Class="mb-6" Height="660px"
             HorizontalScrollbar Striped FixedHeader Filter="new Func<Food, bool>(FilterSearch)">
-        <ToolBarContent>
-            <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+    <ToolBarContent>
+        <MudTextField @bind-Value="_searchValue" Placeholder="검색" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                       Class="mt-0" Clearable Immediate>
         </MudTextField>
     </ToolBarContent>
@@ -56,11 +50,10 @@ else
         </MudTd>
         <MudTd DataLabel="상점가">
             <center>@context.ShopPrice.ToMoneyComma()</center>
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
 }
-
 
 @code {
     private string? _searchValue;
