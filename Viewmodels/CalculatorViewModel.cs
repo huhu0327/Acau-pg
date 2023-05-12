@@ -42,12 +42,12 @@ namespace Acau_Playground.Viewmodels
             }
         }
 
-        public ISet<Food> TableItems { get; private set; }
-        public HashSet<Food> SelectedTableItems { get; set; }
+        public ISet<Food> TableItems { get; private set; } = new HashSet<Food>();
+        public HashSet<Food> SelectedTableItems { get; set; } = new HashSet<Food>();
 
         public bool IsVisibleDialog { get; set; }
-        public string SelectedJobName { get; set; }
-        public IEnumerable<string> SelectedFoodNames { get; set; }
+        public string SelectedJobName { get; set; } = string.Empty;
+        public IEnumerable<string> SelectedFoodNames { get; set; } = Enumerable.Empty<string>();
 
         public int Price => TableItems.Sum(content => content.Sum);
 
@@ -65,11 +65,7 @@ namespace Acau_Playground.Viewmodels
         {
             var json = await _storageViewModel.GetTableItemAsync();
 
-            TableItems = json switch
-            {
-                _ when string.IsNullOrWhiteSpace(json) => new HashSet<Food>(),
-                _ => JsonConvert.DeserializeObject<ISet<Food>>(json)
-            };
+            if (!string.IsNullOrEmpty(json)) TableItems = JsonConvert.DeserializeObject<ISet<Food>>(json);
         }
 
         private void ConfigurateSnackbar()
@@ -131,7 +127,7 @@ namespace Acau_Playground.Viewmodels
             var items = TableItems.Select(item => item.Name);
 
             var result = _foodViewModel.GetFoodList(SelectedJobName)
-                .Select(food => food.Name)
+                ?.Select(food => food.Name)
                 .Where(food => !food.Contains("등급"))
                 .Except(items);
 
@@ -152,7 +148,7 @@ namespace Acau_Playground.Viewmodels
 
         public void AddDialog()
         {
-            if (string.IsNullOrEmpty(SelectedJobName) || SelectedFoodNames.FirstOrDefault() is null) return;
+            if (SelectedFoodNames.FirstOrDefault() is null) return;
 
             AddFoods(SelectedFoodNames);
             CloseDialog();
@@ -162,7 +158,7 @@ namespace Acau_Playground.Viewmodels
         {
             if (TableItems is null) return;
 
-            ISet<Food> data = TableItems.Select(s => s.Clone()).ToHashSet();
+            ISet<Food> data = TableItems.Select(s => s with { Box = 0, Set = 0, Num = 0 }).ToHashSet();
 
             var json = JsonConvert.SerializeObject(data);
             await _storageViewModel.SetTableItemAsync(json);

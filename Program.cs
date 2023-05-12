@@ -1,6 +1,5 @@
 using Acau_Playground;
-using Acau_Playground.Services;
-using Acau_Playground.Viewmodels;
+using Acau_Playground.Extensions;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -19,31 +18,5 @@ builder.Services.AddViewModels();
 
 var host = builder.Build();
 
-var tasks = new Task[]
-{
-    host.Services.GetRequiredService<FoodViewModel>().OnInitializedAsync(),
-    host.Services.GetRequiredService<LocalStorageViewModel>().OnInitializedAsync(),
-    host.Services.GetRequiredService<CalculatorViewModel>().OnInitializedAsync(),
-};
-await Task.WhenAll(tasks);
+await host.Services.InitServices();
 await host.RunAsync();
-
-public static class ServiceExtension
-{
-    public static IServiceCollection AddServices(this IServiceCollection services)
-    {
-        services.AddScoped<IClipboardService, ClipboardService>();
-        services.AddScoped<IFoodService, FoodService>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddViewModels(this IServiceCollection services)
-    {
-        services.AddScoped<FoodViewModel>();
-        services.AddScoped<LocalStorageViewModel>();
-        services.AddScoped<CalculatorViewModel>();
-
-        return services;
-    }
-}

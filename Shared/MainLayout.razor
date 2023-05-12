@@ -3,11 +3,11 @@
 @inject LocalStorageViewModel StorageViewModel
 
 <MudThemeProvider @bind-IsDarkMode=@_isDarkMode Theme="_theme" />
-<MudDialogProvider DisableBackdropClick="true"/>
+<MudDialogProvider DisableBackdropClick="true" />
 <MudSnackbarProvider />
 
-<MudLayout Style="height:900px">
-    <MudAppBar Elevation="0" Class="docs-appbar">
+<MudLayout>
+    <MudAppBar Elevation="0">
         <MudButton Color=Color.Inherit Href="/">
             <b>악어의 놀이터</b>
         </MudButton>
@@ -17,29 +17,22 @@
         <MudButton Color=Color.Inherit Href="/shop">
             상점가
         </MudButton>
-
-        <MudSpacer />
-
-        <MudTooltip Text="Switch Theme">
-            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" Toggled=@_isDarkMode ToggledChanged="@ChangeThemeModeAsync"
-                                 ToggledIcon="@Icons.Material.Outlined.Brightness6" Color="Color.Inherit" />
-        </MudTooltip>
     </MudAppBar>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-6" Style="height:960px;">
             @Body
         </MudContainer>
     </MudMainContent>
 
-    <MudAppBar Fixed=false Bottom="true">
+    <MudAppBar Fixed Bottom="true" Elevation="0">
         <MudSpacer />
         <MudText>Copyright©2023 huhu</MudText>
         <MudSpacer />
     </MudAppBar>
-</MudLayout>
+    </MudLayout>
 
-@code {
+    @code {
     private MudTheme _theme = new();
     private bool _isDarkMode;
 
