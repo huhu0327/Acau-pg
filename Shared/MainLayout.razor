@@ -17,6 +17,13 @@
         <MudButton Color=Color.Inherit Href="/shop">
             상점가
         </MudButton>
+
+        <MudSpacer/>
+
+        <MudTooltip Text="Switch Theme">
+            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" ToggledChanged="@ChangeThemeModeAsync"
+                                 ToggledIcon="@Icons.Material.Outlined.Brightness6" Color="Color.Inherit" />
+        </MudTooltip>
     </MudAppBar>
 
     <MudMainContent>
