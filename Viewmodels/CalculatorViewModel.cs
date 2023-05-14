@@ -1,4 +1,5 @@
-﻿using Acau_Playground.Models;
+﻿using Acau_Playground.Extensions;
+using Acau_Playground.Models;
 using Acau_Playground.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MudBlazor;
@@ -19,10 +20,9 @@ namespace Acau_Playground.Viewmodels
             get { return _isEditTable; }
             set
             {
-                if (EqualityComparer<bool>.Default.Equals(_isEditTable, value)) return;
-                _isEditTable = value;
+                value.DefaultEquals(ref _isEditTable);
 
-                if (!_isEditTable) UpdateTable().GetAwaiter();
+                if (!_isEditTable) UpdateTableStorage().GetAwaiter();
             }
         }
 
@@ -32,18 +32,19 @@ namespace Acau_Playground.Viewmodels
             get { return _plusPrice; }
             set
             {
-                if (EqualityComparer<int>.Default.Equals(_plusPrice, value)) return;
-                _plusPrice = value;
+                if (value.DefaultEquals(ref _plusPrice)) return;
 
-                foreach (var item in TableItems)
+                if (SelectedTableItems?.FirstOrDefault() is null) return;
+
+                foreach (var item in SelectedTableItems)
                 {
-                    item.PurchasePrice = _plusPrice;
+                    TableItems.First(i => i.Name.Contains(item.Name)).PurchasePrice = _plusPrice;
                 }
             }
         }
 
-        public ISet<Food> TableItems { get; private set; } = new HashSet<Food>();
-        public HashSet<Food> SelectedTableItems { get; set; } = new HashSet<Food>();
+        public HashSet<Food> TableItems { get; private set; }
+        public HashSet<Food> SelectedTableItems { get; set; }
 
         public bool IsVisibleDialog { get; set; }
         public string SelectedJobName { get; set; } = string.Empty;
@@ -65,7 +66,10 @@ namespace Acau_Playground.Viewmodels
         {
             var json = await _storageViewModel.GetTableItemAsync();
 
-            if (!string.IsNullOrEmpty(json)) TableItems = JsonConvert.DeserializeObject<ISet<Food>>(json);
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                TableItems = JsonConvert.DeserializeObject<HashSet<Food>>(json)!;
+            }
         }
 
         private void ConfigurateSnackbar()
@@ -76,21 +80,38 @@ namespace Acau_Playground.Viewmodels
             _snackbar.Configuration.ShowCloseIcon = false;
         }
 
-
-        public void RemoveSelectedItem(Food food)
+        public IEnumerable<string> GetItems()
         {
-            TableItems.Remove(food);
+            if (string.IsNullOrWhiteSpace(SelectedJobName))
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            var exceptionItems = TableItems.Select(item => item.Name);
+
+            var result = _foodViewModel.GetFoodList(SelectedJobName)
+                ?.Select(food => food.Name)
+                .Where(food => !food.Contains("등급"))
+                .Except(exceptionItems)
+                ?? Enumerable.Empty<string>();
+
+            return result;
         }
 
-        public void RemoveSelectedItems()
+        public void RemoveItem(string foodName)
+        {
+            TableItems.RemoveWhere(item => item.Name.Contains(foodName));
+        }
+
+        public void RemoveItems()
         {
             foreach (var item in SelectedTableItems)
             {
-                TableItems.Remove(item);
+                RemoveItem(item.Name);
             }
         }
 
-        public void Reset()
+        public void ResetItems()
         {
             foreach (var item in TableItems)
             {
@@ -108,30 +129,18 @@ namespace Acau_Playground.Viewmodels
             await Task.WhenAll(task);
         }
 
+        public IEnumerable<string> GetFoods()
+        {
+            return _foodViewModel.GetJobList();
+        }
+
         private void AddFoods(IEnumerable<string> foods)
         {
             foreach (var foodName in foods)
             {
                 var food = _foodViewModel.GetFood(foodName);
-                if (food is null) continue;
                 TableItems.Add(food);
             }
-        }
-
-        public IEnumerable<string> GetFoods() => _foodViewModel.GetJobList();
-
-        public IEnumerable<string> GetItems()
-        {
-            if (string.IsNullOrWhiteSpace(SelectedJobName)) return Enumerable.Empty<string>();
-
-            var items = TableItems.Select(item => item.Name);
-
-            var result = _foodViewModel.GetFoodList(SelectedJobName)
-                ?.Select(food => food.Name)
-                .Where(food => !food.Contains("등급"))
-                .Except(items);
-
-            return result;
         }
 
         public void ShowDialog()
@@ -148,18 +157,24 @@ namespace Acau_Playground.Viewmodels
 
         public void AddDialog()
         {
-            if (SelectedFoodNames.FirstOrDefault() is null) return;
+            if (SelectedFoodNames?.FirstOrDefault() is null)
+            {
+                return;
+            }
 
             AddFoods(SelectedFoodNames);
             CloseDialog();
         }
 
-        public async Task UpdateTable()
+        public async Task UpdateTableStorage()
         {
-            if (TableItems is null) return;
+            if (TableItems?.FirstOrDefault() is null)
+            {
+                return;
+            }
 
-            ISet<Food> data = TableItems.Select(s => s with { Box = 0, Set = 0, Num = 0 }).ToHashSet();
-
+            var data = TableItems.Select(s => new Food()
+            { Name = s.Name, PurchasePrice = s.PurchasePrice, ShopPrice = s.ShopPrice }).ToHashSet();
             var json = JsonConvert.SerializeObject(data);
             await _storageViewModel.SetTableItemAsync(json);
         }
