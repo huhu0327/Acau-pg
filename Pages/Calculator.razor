@@ -55,7 +55,7 @@
 
     <RowTemplate>
         <MudTd DataLabel="이름">@context.Name</MudTd>
-        <MudTd DataLabel="상점가"><center>@context.ShopPrice.ToMoneyComma()</center></MudTd>
+        <MudTd DataLabel="상점가"><center>@((context.ShopPrice).ToMoneyComma())</center></MudTd>
         @if (!ViewModel.IsEditTable)
         {
             <MudTd DataLabel="판매가"><center>@((context.ShopPrice + context.PurchasePrice).ToMoneyComma())</center></MudTd>
@@ -70,7 +70,7 @@
                 <MudNumericField @bind-Value="@context.PurchasePrice" Min="0" Variant="Variant.Outlined" Immediate Clearable />
             </MudTd>
             <MudTd>
-                <center><MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick=@(()=> ViewModel.RemoveSelectedItem(context))>삭제</MudButton></center>
+                <center><MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick=@(()=> ViewModel.RemoveItem(context.Name))>삭제</MudButton></center>
             </MudTd>
         }
     </RowTemplate>
@@ -90,7 +90,7 @@
             <MudTd>모두 선택</MudTd>
             <MudTd />
             <MudTd><MudNumericField @bind-Value=ViewModel.PlusPrice Min="0" Variant="Variant.Outlined" Immediate Clearable /></MudTd>
-                <MudTd><center><MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="@ViewModel.RemoveSelectedItems">삭제</MudButton></center></MudTd>
+                <MudTd><center><MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="@ViewModel.RemoveItems">삭제</MudButton></center></MudTd>
             </MudTFootRow>
         }
     </FooterContent>
@@ -98,7 +98,7 @@
 
 <MudStack Row=true Class="mb-4">
     <MudSpacer />
-    <MudButton Color="Color.Primary" Variant="Variant.Outlined" @onclick="ViewModel.Reset">초기화</MudButton>
+    <MudButton Color="Color.Primary" Variant="Variant.Outlined" @onclick="ViewModel.ResetItems">초기화</MudButton>
     <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="ViewModel.CopyPriceAsync" title="/수표 금액 명령어를 복사합니다">복사</MudButton>
 </MudStack>
 <MudText Class="mb-4" Align="Align.Right">

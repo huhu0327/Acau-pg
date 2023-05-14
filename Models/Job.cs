@@ -6,7 +6,7 @@
         public IEnumerable<Food> Foods { get; set; } = Enumerable.Empty<Food>();
     }
 
-    public record class Food
+    public class Food
     {
         public string Name { get; set; } = string.Empty;
         public int ShopPrice { get; set; }

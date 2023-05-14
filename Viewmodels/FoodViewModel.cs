@@ -1,14 +1,14 @@
 ﻿using Acau_Playground.Models;
 using Acau_Playground.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.Immutable;
 
 namespace Acau_Playground.Viewmodels
 {
     public class FoodViewModel : ObservableObject
     {
         private readonly IFoodService _foodService;
-        private IReadOnlyDictionary<string, IEnumerable<Food>> _foodList
-            = new Dictionary<string, IEnumerable<Food>>();
+        private ImmutableDictionary<string, IEnumerable<Food>> _foodList;
 
         public FoodViewModel(IFoodService foodService)
         {
@@ -40,6 +40,9 @@ namespace Acau_Playground.Viewmodels
             return _foodList.ElementAt(index).Value;
         }
 
-        public IEnumerable<string> GetJobList() => _foodList.Keys;
+        public IEnumerable<string> GetJobList()
+        {
+            return _foodList.Keys;
+        }
     }
 }
