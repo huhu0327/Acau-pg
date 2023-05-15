@@ -43,8 +43,8 @@ namespace Acau_Playground.Viewmodels
             }
         }
 
-        public HashSet<Food> TableItems { get; private set; }
-        public HashSet<Food> SelectedTableItems { get; set; }
+        public HashSet<Food> TableItems { get; private set; } = default!;
+        public HashSet<Food> SelectedTableItems { get; set; } = default!;
 
         public bool IsVisibleDialog { get; set; }
         public string SelectedJobName { get; set; } = string.Empty;
@@ -66,10 +66,7 @@ namespace Acau_Playground.Viewmodels
         {
             var json = await _storageViewModel.GetTableItemAsync();
 
-            if (!string.IsNullOrWhiteSpace(json))
-            {
-                TableItems = JsonConvert.DeserializeObject<HashSet<Food>>(json)!;
-            }
+            TableItems = !string.IsNullOrWhiteSpace(json) ? JsonConvert.DeserializeObject<HashSet<Food>>(json)! : new HashSet<Food>();
         }
 
         private void ConfigurateSnackbar()
