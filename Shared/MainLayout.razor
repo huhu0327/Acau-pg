@@ -21,7 +21,7 @@
         <MudSpacer/>
 
         <MudTooltip Text="Switch Theme">
-            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" ToggledChanged="@ChangeThemeModeAsync"
+            <MudToggleIconButton Icon="@Icons.Material.Filled.Brightness6" Toggled=@_isDarkMode ToggledChanged="@ChangeThemeModeAsync"
                                  ToggledIcon="@Icons.Material.Outlined.Brightness6" Color="Color.Inherit" />
         </MudTooltip>
     </MudAppBar>
