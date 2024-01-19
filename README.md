@@ -23,6 +23,4 @@
 - MudBlazor
 
 ## Contact
-- huhu0327
-- [@Discord](https://www.discord.com/users/155903720360640512)
 - namdalen1115@gmail.com
