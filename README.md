@@ -22,5 +22,11 @@
 - BlazorWebAssembly 
 - MudBlazor
 
+## Feature
+- localstorage
+
+## Todo
+- System theme에 맞게 theme 적용
+
 ## Contact
 - namdalen1115@gmail.com
