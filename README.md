@@ -24,6 +24,7 @@
 
 ## Feature
 - localstorage를 이용한 local data 저장
+- cloudflare page로 배포
 
 ## Todo
 - System theme에 맞게 theme 적용
