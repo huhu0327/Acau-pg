@@ -21,13 +21,13 @@
 - C# .NET 6.0
 - BlazorWebAssembly 
 - MudBlazor
+- CloudFlare Pages로 배포
 
 ## Feature
-- localstorage를 이용한 local data 저장
-- cloudflare page로 배포
+- LocalStorage를 이용한 local data 저장
 
 ## Todo
-- System theme에 맞게 theme 적용
+- 사용자 System theme에 맞게 theme 적용
 
 ## Contact
 - namdalen1115@gmail.com
