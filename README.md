@@ -21,6 +21,7 @@
 - C# .NET 6.0
 - BlazorWebAssembly 
 - MudBlazor
+- Blazored.LocalStorage
 - CloudFlare Pages로 배포
 
 ## Feature
